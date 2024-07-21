@@ -36,17 +36,20 @@ io.on('connection', (socket) => {
   socket.on('compile', (data) => {
     const { code, language } = data;
     const filename = language === 'cpp' ? 'program.cpp' : 'program.c';
-    const output = 'program.exe';
+    const output = language === 'cpp' ? 'program.exe' : 'program.exe';
 
+    // Write the code to a file
     fs.writeFileSync(filename, code);
 
+    // Compile the code
     const compileCommand = language === 'cpp' ? `g++ ${filename} -o ${output}` : `gcc ${filename} -o ${output}`;
     exec(compileCommand, (error, stdout, stderr) => {
       if (error) {
         return socket.emit('compile result', { output: stderr });
       }
 
-      const runCommand = `./${output}`;
+      // Run the compiled program
+      const runCommand = process.platform === 'win32' ? `${output}` : `./${output}`;
       exec(runCommand, (runError, runStdout, runStderr) => {
         if (runError) {
           return socket.emit('compile result', { output: runStderr });
@@ -55,6 +58,10 @@ io.on('connection', (socket) => {
         io.emit('compile result', { output: runStdout });
       });
     });
+  });
+
+  socket.on('chat message', (message) => {
+    io.emit('chat message', message);
   });
 
   socket.on('chat message', (message) => {

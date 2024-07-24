@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -64,8 +65,17 @@ io.on('connection', (socket) => {
     io.emit('chat message', message);
   });
 
-  socket.on('chat message', (message) => {
-    io.emit('chat message', message);
+//voice call sockets
+  socket.on('offer', (data) => {
+    socket.broadcast.emit('offer', data);
+  });
+
+  socket.on('answer', (data) => {
+      socket.broadcast.emit('answer', data);
+  });
+
+  socket.on('candidate', (data) => {
+      socket.broadcast.emit('candidate', data);
   });
 
   socket.on('signal', (data) => {
@@ -73,6 +83,10 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log('Server is running on http://localhost:8080');
+app.get('/user',(req,res) =>{
+  res.send("Hello There!");
+})
+const port = process.env.PORT;
+server.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });

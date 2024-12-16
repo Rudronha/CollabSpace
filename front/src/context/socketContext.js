@@ -1,84 +1,128 @@
-import React, { useState, useEffect, useRef, createContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useMemo } from 'react';
 import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
 
 const SocketProvider = ({ children }) => {
-  const [code, setCode] = useState('// Write your code here');
-  const [output, setOutput] = useState('');
-  const [language, setLanguage] = useState('cpp');
-  const [messages, setMessages] = useState([]);
-  const [chatInput, setChatInput] = useState('');
-  const [userId, setUserId] = useState(null);
-  const socketRef = useRef();
+    const [code, setCode] = useState('// Write your code here');
+    const [output, setOutput] = useState('');
+    const [language, setLanguage] = useState('cpp');
+    const [messages, setMessages] = useState([]);
+    const [chatInput, setChatInput] = useState('');
+    const [userId, setUserId] = useState(null);
+    const [roomCode, setRoomCode] = useState('');
+    const socketRef = useRef();
 
-  useEffect(() => {
-    // Connect to Socket.io server
-    socketRef.current = io(process.env.REACT_APP_API_URL);
-    socketRef.current.on('connect', () => {
-      setUserId(socketRef.current.id);  // Set the user ID to the socket ID
-      console.log('Connected to server');
-    });
+    useEffect(() => {
+        // Connect to the Socket.io server with token authentication
+        const token = "valid-token"; // Replace with a proper token retrieval method
+        socketRef.current = io(process.env.REACT_APP_API_URL, { query: { token } });
 
-    // Handle incoming text changes
-    socketRef.current.on('text change', (newText) => {
-      setCode(newText);
-    });
+        socketRef.current.on('connect', () => {
+            setUserId(socketRef.current.id);
+            console.log('Connected to server');
+        });
 
-    // Handle incoming language changes
-    socketRef.current.on('language change', (newLanguage) => {
-      setLanguage(newLanguage);
-    });
+        socketRef.current.on('text change', (newText) => setCode(newText));
+        socketRef.current.on('language change', (newLanguage) => setLanguage(newLanguage));
+        socketRef.current.on('compile result', (result) => setOutput(result.output));
+        socketRef.current.on('chat message', (message) => setMessages((prev) => [...prev, message]));
 
-    // Handle incoming compile results
-    socketRef.current.on('compile result', (result) => {
-      setOutput(result.output);
-    });
+        // Handle reconnection
+        socketRef.current.on('reconnect', () => {
+            console.log('Reconnected to server');
+            if (roomCode) {
+                socketRef.current.emit('joinRoom', roomCode);
+            }
+        });
 
-    // Handle incoming chat messages
-    socketRef.current.on('chat message', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-
-    //Clean up Socket.io connection on unmount
         return () => {
-        socketRef.current.disconnect();
+            socketRef.current.disconnect();
         };
-    }, []);
+    }, [roomCode]);
 
-    const handleChange = (newText) => {
-        setCode(newText);
-        // Send new text to Socket.io server
-        socketRef.current.emit('text change', newText);
-    };
+    const createRoom = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/create-room', { method: 'GET' });
+            if (!response.ok) throw new Error('Failed to create room');
 
-    const handleLanguageChange = (newLanguage) => {
-        setLanguage(newLanguage);
-        // Send new language to Socket.io server
-        socketRef.current.emit('language change', newLanguage);
-    };
-
-    const handleCompile = () => {
-        // Send code and language to the server for compilation
-        socketRef.current.emit('compile', { code, language });
-    };
-
-    const handleSendMessage = () => {
-        if (chatInput.trim()) {
-            // Send chat message to Socket.io server
-            const message = { userId, text: chatInput };
-            socketRef.current.emit('chat message', message);
-            setChatInput('');
+            const data = await response.json();
+            setRoomCode(data.roomCode);
+            socketRef.current.emit('createRoom', data.roomCode);
+        } catch (error) {
+            console.error('Error creating room:', error);
         }
     };
 
-    return (
-        <SocketContext.Provider value={{ code, output, messages, userId,language, chatInput, handleChange, handleCompile, handleLanguageChange, handleSendMessage,setChatInput }}>
-            {children}
-        </SocketContext.Provider>
-    );
+    const joinRoom = async (code) => {
+        try {
+            const response = await fetch(`http://localhost:5000/join-room/${code}`);
+            if (response.ok) {
+                socketRef.current.emit('joinRoom', code);
+                setRoomCode(code);
+                console.log(`Joined room: ${code}`);
+            } else {
+                console.error('Room not found');
+            }
+        } catch (error) {
+            console.error('Error joining room:', error);
+        }
+    };
 
+    const handleChange = (newText) => {
+        if (!roomCode) {
+            console.error('Cannot emit text change: No room code');
+            return;
+        }
+        setCode(newText);
+        socketRef.current.emit('text change', { roomCode, newText });
+    };
+
+    const handleLanguageChange = (newLanguage) => {
+        if (!roomCode) {
+            console.error('Cannot emit language change: No room code');
+            return;
+        }
+        setLanguage(newLanguage);
+        socketRef.current.emit('language change', { roomCode, newLanguage });
+    };
+
+    const handleCompile = () => {
+        if (!roomCode) {
+            console.error('Cannot compile: No room code');
+            return;
+        }
+        socketRef.current.emit('compile', { roomCode, code, language });
+    };
+
+    const handleSendMessage = () => {
+        if (!chatInput.trim() || !roomCode) {
+            console.error('Cannot send message: No room code or message is empty');
+            return;
+        }
+        const message = { userId, text: chatInput };
+        socketRef.current.emit('chat message', { roomCode, message });
+        setChatInput('');
+    };
+
+    const contextValue = useMemo(() => ({
+        code,
+        output,
+        messages,
+        userId,
+        language,
+        chatInput,
+        roomCode,
+        setChatInput,
+        joinRoom,
+        createRoom,
+        handleChange,
+        handleCompile,
+        handleLanguageChange,
+        handleSendMessage,
+    }), [code, output, messages, userId, language, chatInput, roomCode]);
+
+    return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>;
 };
 
-export {SocketContext, SocketProvider};
-  
+export { SocketContext, SocketProvider };

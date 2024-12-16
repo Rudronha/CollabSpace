@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import './window.css';
 import useSafeResizeObserver from '../hooks/useSafeResizeObserver';
 import Chats from './pages/chats';
-import Call from './pages/call';
+
 const Window = ({ selectedMenu, onClose }) => {
   const winRef = useRef();
 
@@ -20,7 +20,6 @@ const Window = ({ selectedMenu, onClose }) => {
       </div>
       <div className="window-content">
         {selectedMenu==='Chat'?<Chats/>:''}
-        {selectedMenu==='Call'?<Call/>:''}
       </div>
     </div>
   );

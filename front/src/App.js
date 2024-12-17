@@ -6,7 +6,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Main />} />
+        <Route path="/" element={<Main />} />
         <Route path="/class" element={<SecureRoute />} />
       </Routes>
     </Router>

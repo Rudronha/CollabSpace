@@ -2,14 +2,17 @@ import React, { useContext, useState } from 'react';
 import Navbar from './MainNavbar';
 import './Main.css';
 import { SocketContext } from '../context/socketContext';
+import { useNavigate } from 'react-router-dom';
 
 const Main = () => {
     const [labCode, setLabCode] = useState('');
     const [generatedRoomCode, setGeneratedRoomCode] = useState('');
-    const { createRoom, roomCode, joinRoom } = useContext(SocketContext);
+    const { createRoom , joinRoom } = useContext(SocketContext);
+    const navigate = useNavigate();
 
-    const generateRoomCode = () => {
-        createRoom();
+    const generateRoomCode = async () => {
+        const roomCode = await createRoom();
+
         if (roomCode) {
             setGeneratedRoomCode(roomCode);
         }
@@ -20,7 +23,7 @@ const Main = () => {
             joinRoom(labCode);
             const token = 'valid-token'; // Generate or fetch a valid token for the room
             const meetUrl = `/class?token=${token}`; // Assuming the app runs locally; modify as needed
-            window.open(meetUrl, "_blank", "noopener,noreferrer");
+            navigate(meetUrl);
         } else {
             alert('Please enter a room code');
         }

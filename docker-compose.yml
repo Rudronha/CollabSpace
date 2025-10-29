@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./api  # Path to the backend directory
+    container_name: backend
+    ports:
+      - "5000:5000"  # Backend port
+    volumes:
+      - ./api:/app  # Mount the backend code into the container
+    networks:
+      - app-network
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build:
+      context: ./front  # Path to the frontend directory
+    container_name: frontend
+    ports:
+      - "3000:3000"  # Frontend port (React development server)
+    volumes:
+      - ./front:/app  # Mount the frontend code into the container
+    networks:
+      - app-network
+    environment:
+      - NODE_ENV=development
+
+networks:
+  app-network:
+    driver: bridge

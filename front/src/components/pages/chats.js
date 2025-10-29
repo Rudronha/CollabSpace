@@ -3,24 +3,9 @@ import './chats.css';
 import { SocketContext } from '../../context/socketContext';
 
 const Chats = () => {
-  //const [messages, setMessages] = useState([]);
   const { messages, handleSendMessage, chatInput, setChatInput, userId} = useContext(SocketContext);
-  //const [input, setInput] = useState('');
 
-//   const handleSend = () => {
-//     if (input.trim()) {
-//       setMessages([...messages, { text: input, sender: 'user' }]);
-//       setInput('');
-//       // Simulate a response after 1 second
-//       setTimeout(() => {
-//         setMessages((prevMessages) => [
-//           ...prevMessages,
-//           { text: 'This is a response message', sender: 'response' },
-//         ]);
-//       }, 1000);
-//     }
-//   };
-
+  //console.log(messages);
   return (
     <div className="chats-container">
       <div className="messages">

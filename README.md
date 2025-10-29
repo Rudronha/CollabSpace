@@ -2,7 +2,7 @@
 
 ## Project Overview
 Updated with rooms features 
-This project is a collaboration platform that allows users to share code, communicate via voice calls, and send messages. It is built with a modern tech stack including React for the frontend, Express.js for the backend, and WebRTC for real-time communication.
+This project is a collaboration platform that allows users to share code, communicate via voice calls and send messages. It is built with a modern tech stack including React for the frontend, Express.js for the backend, and WebRTC for real-time communication.
 
 ## Features
 - **Code Sharing**: Users can write, edit, and share code in real-time.

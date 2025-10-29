@@ -7,7 +7,7 @@ const MainNavbar = () => {
             <div className="navbar-logo">
                 <FaFreebsd className='logo'/>
                  {/* Replace 'logo.png' with your logo file path <img src="logo.png" alt="Site Logo" className="logo" /> */}
-                <h1>Colabspace</h1>
+                <h1>ColabSpace</h1>
             </div>
         </nav>
     );

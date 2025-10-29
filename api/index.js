@@ -141,13 +141,13 @@ io.on('connection', (socket) => {
 });
 
 app.get('/user', (req, res) => {
-  res.send("Hello There! Rudronha");
+  res.status(200).send("Hello There! Rudronha");
 });
 
 app.get('/create-room', (req, res) => {
   const roomCode = generateRoomCode(); // Generate room code
   rooms[roomCode] = { users: [] }; // Initialize room with empty users
-  res.json({ roomCode });
+  res.status(200).json({ roomCode });
 });
 
 app.get('/join-room/:code', (req, res) => {
@@ -165,3 +165,4 @@ server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
+module.exports = app;

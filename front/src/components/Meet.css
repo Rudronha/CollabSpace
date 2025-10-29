@@ -13,7 +13,7 @@ body, html {
 }
 
 .main-section {
-    margin-left: 80px; /* Adjusted for sidebar width */
+    margin-left: 80px;
     display: flex;
     flex-direction: column;
     background-size: cover;
@@ -21,32 +21,82 @@ body, html {
     background-color: #ffffff;
 }
 
+/* --- Header --- */
 .header-nav {
     position: fixed;
     background-color: #1f1f1f;
-    height: 30px;
+    height: 40px;
     width: calc(100% - 80px);
     color: #ffffff;
-    transition: left 0.3s, width 0.3s;
-  }
-  
-  .lang-option {
-    margin-left: 10px;
-    padding: 3px;
-    margin-top: 4px;
-    width: 100px;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px; /* ✅ added */
+    box-sizing: border-box;
+    z-index: 10;
+}
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
+.logo {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
+.lang-option {
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.share-code {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.token-text {
+  background-color: #f4f4f4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  color: #333;
+}
+
+.copy-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.copy-btn:hover {
+  background-color: #0056b3;
+}
+
+/* --- Editor & Output --- */
 .editor-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin-top: 30px; /* Adjusted for navbar height */
+    margin-top: 40px; /* below navbar */
     padding: 10px;
-    position: fixed;
-    width: calc(100% - 100px);
+    width: calc(100% - 30px);
+    height: calc(100vh - 40px);
+    min-height: 0;
+    position: relative;
 }
 
 .code-editor {
@@ -58,23 +108,30 @@ body, html {
     overflow-y: auto;
 }
 
+/* Output panel */
 .output-section {
-    flex: 1;
-    background-color: #f1f1f1;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: #1e293b;
+  border-top: 1px solid #334155;
+  transition: height 0.2s ease;
+  user-select: none; /* ✅ prevents text selection during resize */
 }
 
 .output-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #ccc;
+    padding: 6px 40px;
+    border-bottom: 1px solid #475569;
+    background-color: #0f172a;
+    color: #fff;
+    height: 30px; /* ✅ more usable size */
+    cursor: ns-resize; 
+    z-index: 5;
 }
 
 .output-title {
@@ -87,7 +144,7 @@ body, html {
     border: none;
     border-radius: 5px;
     color: #fff;
-    padding: 5px 10px;
+    padding: 5px 20px;
     cursor: pointer;
     font-size: 14px;
 }
@@ -97,11 +154,16 @@ body, html {
 }
 
 .output-box {
-    flex: 1;
-    padding: 10px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    overflow-y: auto;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 0 0 8px 8px;
+  font-family: monospace;
+  overflow-y: auto;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  min-height: 0;
 }
 
 .access-error {

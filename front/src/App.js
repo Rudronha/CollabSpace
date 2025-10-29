@@ -19,7 +19,7 @@ function SecureRoute() {
 
   // Simple token validation logic (replace with an actual validation check)
   if (token && token === 'valid-token') {
-    return <Meet />;
+    return <Meet/>;
   } else {
     return <Navigate to="/home" />;
   }

@@ -1,12 +1,12 @@
 /* Navbar styles */
 .navbar {
     width: 100%;
-    height: 8%;
+    height: 60px;
     background-color: #333;
     color: white;
     display: flex;
+    justify-content: space-between; /* pushes logo left & auth right */
     align-items: center;
-    padding: 10px 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
@@ -14,19 +14,60 @@
     z-index: 1000;
 }
 
+/* Logo and title */
 .navbar-logo {
+    padding-left: 10px;
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .logo {
     height: 30px;
     width: 30px;
-    margin-right: 10px;
+    color: #00bcd4; /* optional accent color */
 }
 
 .navbar h1 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     margin: 0;
+}
+
+/* Auth buttons */
+.auth {
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.auth .btn {
+    text-decoration: none;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.auth .btn:hover {
+    background-color: white;
+    color: #333;
+}
+
+/* Responsive: stack elements on smaller screens */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    .auth {
+        margin-top: 8px;
+    }
 }

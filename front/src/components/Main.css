@@ -1,10 +1,15 @@
 /* Container styles */
 .container {
-    display: flex;
-    height: calc(100vh - 100px); /* Adjust height to fit navbar */
-    padding-top: 60px; /* Space for fixed navbar */
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-image: url('../assets/1.jpg'); /* Adjust the path */
+  background-size: cover;       /* Ensures it covers the whole area */
+  background-position: center;  /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Half container styling */

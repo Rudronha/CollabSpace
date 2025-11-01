@@ -2,11 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Meet from './components/Meet';
 import Main from './components/Main';
+import Signup from './components/auth/Signup';
+import Login from './components/auth/Login';
+
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/class" element={<SecureRoute />} />
       </Routes>
     </Router>

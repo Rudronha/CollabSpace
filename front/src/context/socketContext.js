@@ -24,7 +24,7 @@ const SocketProvider = ({ children }) => {
 
         socketInstance.on('room-created', (roomId) => {
             console.log(`Room created with ID: ${roomId}`);
-            alert(`Share this Room ID with friends: ${roomId}`);
+            //alert(`Share this Room ID with friends: ${roomId}`);
             setCurrentRoomId(roomId);
         });
 
